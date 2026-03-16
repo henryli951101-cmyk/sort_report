@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #arrayContainer {
+            margin-top: 20px;
+            display: flex;
+            gap: 5px;
+        }
+        .bar {
+            background-color: #4CAF50;
+            width: 30px;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bubble Sort Demonstration</h1>
+    <p>Enter a list of numbers separated by commas, then click <strong>Sort</strong> to see the bubble sort steps.</p>
+    <input type="text" id="inputArray" placeholder="e.g. 5,3,8,4,2" size="30">
+    <button onclick="startSort()">Sort</button>
+    <div id="steps"></div>
+    <div id="arrayContainer"></div>
+
+    <script>
+        function renderArray(arr) {
+            const container = document.getElementById('arrayContainer');
+            container.innerHTML = '';
+            arr.forEach(value => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = (value * 10) + 'px';
+                bar.textContent = value;
+                container.appendChild(bar);
+            });
+        }
+
+        function bubbleSort(arr, callback) {
+            let n = arr.length;
+            let stepsDiv = document.getElementById('steps');
+            stepsDiv.innerHTML = '';
+            let stepCount = 0;
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            async function sort() {
+                for (let i = 0; i < n - 1; i++) {
+                    for (let j = 0; j < n - i - 1; j++) {
+                        if (arr[j] > arr[j + 1]) {
+                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                            stepCount++;
+                            stepsDiv.innerHTML += `<p>Step ${stepCount}: swapped ${arr[j+1]} and ${arr[j]}</p>`;
+                            renderArray(arr);
+                            await sleep(500);
+                        }
+                    }
+                }
+                if (callback) callback();
+            }
+            sort();
+        }
+
+        function startSort() {
+            const input = document.getElementById('inputArray').value;
+            let arr = input.split(',').map(x => parseInt(x.trim(), 10)).filter(x => !isNaN(x));
+            if (arr.length === 0) {
+                alert('Please enter a valid list of numbers.');
+                return;
+            }
+            renderArray(arr);
+            bubbleSort(arr, () => {
+                const stepsDiv = document.getElementById('steps');
+                stepsDiv.innerHTML += '<p><strong>Sorting complete!</strong></p>';
+            });
+        }
+    </script>
+</body>
+</html>

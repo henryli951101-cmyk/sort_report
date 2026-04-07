@@ -2,134 +2,131 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>排序演算法效能分析工具</title>
+    <title>排序演算法分析工具 - 穩定版</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; width: 100%; max-width: 700px; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h1 { color: #1e293b; font-size: 24px; text-align: center; margin-bottom: 20px; }
-        
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: #475569; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 16px; transition: 0.2s; box-sizing: border-box; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        button { padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-run { background: var(--primary); color: white; }
-        .btn-gen { background: #64748b; color: white; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .result-box { background: #f1f5f9; padding: 20px; border-radius: 12px; min-height: 100px; }
-        #output { word-break: break-all; color: #1e293b; font-family: monospace; margin-bottom: 15px; }
-        .stats { display: flex; justify-content: space-between; font-size: 14px; color: #64748b; border-top: 1px solid #e2e8f0; pt: 10px; padding-top: 10px;}
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .box { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a73e8; }
+        .input-area { margin-bottom: 20px; }
+        textarea { width: 100%; height: 100px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; resize: none; font-size: 14px; }
+        textarea:focus { border-color: #1a73e8; outline: none; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        select, button { padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; }
+        button { background: #1a73e8; color: white; border: none; font-weight: bold; }
+        button:hover { background: #1557b0; }
+        .gen-btn { background: #5f6368; }
+        #res { background: #202124; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; min-height: 50px; word-break: break-all; margin-top: 10px; max-height: 200px; overflow-y: auto; }
+        .info { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #555; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>📊 排序演算法分析報告工具</h1>
+<div class="box">
+    <h2>🚀 排序演算法測試儀</h2>
     
-    <div class="input-group">
-        <label>1. 輸入數據 (支援 Enter 鍵執行)</label>
-        <input type="text" id="inputArray" placeholder="輸入數字並用逗號隔開，或點擊下方按鈕生成">
+    <div class="input-area">
+        <label>輸入區 (支援 Enter 鍵直接排序)：</label>
+        <textarea id="txtIn" placeholder="請輸入數字並用逗號隔開..."></textarea>
     </div>
 
-    <div class="btn-group">
-        <button class="btn-gen" onclick="generateRandom()">🎲 生成 100 個隨機數</button>
-        <button class="btn-run" onclick="execute()">🚀 開始排序 (Enter)</button>
-    </div>
-
-    <div class="input-group">
-        <label>2. 選擇排序演算法</label>
-        <select id="sortMethod">
-            <option value="bubble">🫧 氣泡排序 (Bubble Sort) - O(n²)</option>
-            <option value="selection">🎯 選擇排序 (Selection Sort) - O(n²)</option>
-            <option value="insertion">🃏 插入排序 (Insertion Sort) - O(n²)</option>
-            <option value="merge">✂️ 合併排序 (Merge Sort) - O(n log n)</option>
-            <option value="quick">⚡ 快速排序 (Quick Sort) - O(n log n)</option>
+    <div class="controls">
+        <button class="gen-btn" onclick="randomData()">🎲 隨機產生 100 筆</button>
+        <select id="mode">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="quick">Quick Sort</option>
         </select>
     </div>
 
-    <div class="result-box">
-        <label>排序結果：</label>
-        <div id="output">等待輸入中...</div>
-        <div class="stats">
-            <span id="dataCount">資料量: 0</span>
-            <span id="timer">耗時: 0 ms</span>
-        </div>
+    <button style="width:100%" onclick="go()">開始排序</button>
+
+    <div class="info">
+        <span id="count">數據量: 0</span>
+        <span id="time">耗時: 0 ms</span>
     </div>
+    <div id="res">結果將顯示於此...</div>
 </div>
 
 <script>
-    // --- 演算法實作 ---
-    const bubbleSort = a => {
-        for(let i=0; i<a.length; i++)
-            for(let j=0; j<a.length-i-1; j++)
-                if(a[j]>a[j+1]) [a[j],a[j+1]]=[a[j+1],a[j]];
-        return a;
-    };
-    const selectionSort = a => {
-        for(let i=0; i<a.length-1; i++){
-            let m=i;
-            for(let j=i+1; j<a.length; j++) if(a[j]<a[m]) m=j;
-            [a[i],a[m]]=[a[m],a[i]];
+    // --- 穩定版演算法 ---
+    const sorts = {
+        bubble: (a) => {
+            let n = a.length;
+            for (let i = 0; i < n; i++)
+                for (let j = 0; j < n - i - 1; j++)
+                    if (a[j] > a[j + 1]) [a[j], a[j + 1]] = [a[j + 1], a[j]];
+            return a;
+        },
+        selection: (a) => {
+            for (let i = 0; i < a.length; i++) {
+                let m = i;
+                for (let j = i + 1; j < a.length; j++) if (a[j] < a[m]) m = j;
+                [a[i], a[m]] = [a[m], a[i]];
+            }
+            return a;
+        },
+        insertion: (a) => {
+            for (let i = 1; i < a.length; i++) {
+                let k = a[i], j = i - 1;
+                while (j >= 0 && a[j] > k) { a[j + 1] = a[j]; j--; }
+                a[j + 1] = k;
+            }
+            return a;
+        },
+        merge: function(a) {
+            if (a.length <= 1) return a;
+            const m = Math.floor(a.length / 2);
+            const l = this.merge(a.slice(0, m)), r = this.merge(a.slice(m));
+            let res = [], i = 0, j = 0;
+            while (i < l.length && j < r.length) res.push(l[i] < r[j] ? l[i++] : r[j++]);
+            return res.concat(l.slice(i)).concat(r.slice(j));
+        },
+        quick: function(a) {
+            if (a.length <= 1) return a;
+            let p = a[Math.floor(a.length / 2)], l = [], r = [], m = [];
+            for (let x of a) {
+                if (x < p) l.push(x);
+                else if (x > p) r.push(x);
+                else m.push(x);
+            }
+            return [...this.quick(l), ...m, ...this.quick(r)];
         }
-        return a;
-    };
-    const insertionSort = a => {
-        for(let i=1; i<a.length; i++){
-            let k=a[i], j=i-1;
-            while(j>=0 && a[j]>k) { a[j+1]=a[j]; j--; }
-            a[j+1]=k;
-        }
-        return a;
-    };
-    const mergeSort = a => {
-        if(a.length<=1) return a;
-        let m=Math.floor(a.length/2);
-        let l=mergeSort(a.slice(0,m)), r=mergeSort(a.slice(m));
-        let res=[], i=0, j=0;
-        while(i<l.length && j<r.length) res.push(l[i]<r[j]?l[i++]:r[j++]);
-        return res.concat(l.slice(i)).concat(r.slice(j));
-    };
-    const quickSort = a => {
-        if(a.length<=1) return a;
-        let p=a[0], l=[], r=[];
-        for(let i=1; i<a.length; i++) a[i]<p?l.push(a[i]):r.push(a[i]);
-        return [...quickSort(l), p, ...quickSort(r)];
     };
 
-    // --- 功能邏輯 ---
-    function generateRandom() {
-        let arr = Array.from({length: 100}, () => Math.floor(Math.random() * 1000));
-        document.getElementById("inputArray").value = arr.join(", ");
+    function randomData() {
+        const d = Array.from({length: 100}, () => Math.floor(Math.random() * 500));
+        document.getElementById('txtIn').value = d.join(', ');
     }
 
-    function execute() {
-        const input = document.getElementById("inputArray").value;
-        const method = document.getElementById("sortMethod").value;
-        if(!input.trim()) return;
+    function go() {
+        const raw = document.getElementById('txtIn').value;
+        if (!raw.trim()) return alert("請輸入數據！");
 
-        let arr = input.replace(/，/g, ",").split(",").map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+        document.getElementById('res').innerText = "計算中...";
         
-        const t0 = performance.now();
-        let result = [];
-        if(method==='bubble') result = bubbleSort([...arr]);
-        else if(method==='selection') result = selectionSort([...arr]);
-        else if(method==='insertion') result = insertionSort([...arr]);
-        else if(method==='merge') result = mergeSort([...arr]);
-        else if(method==='quick') result = quickSort([...arr]);
-        const t1 = performance.now();
+        // 延遲執行，讓介面能更新顯示「計算中」
+        setTimeout(() => {
+            const arr = raw.replace(/，/g, ',').split(',').map(Number).filter(n => !isNaN(n));
+            const method = document.getElementById('mode').value;
+            
+            const start = performance.now();
+            const sorted = sorts[method]([...arr]);
+            const end = performance.now();
 
-        document.getElementById("output").innerText = result.join(", ");
-        document.getElementById("dataCount").innerText = `資料量: ${arr.length}`;
-        document.getElementById("timer").innerText = `耗時: ${(t1-t0).toFixed(4)} ms`;
+            document.getElementById('res').innerText = sorted.join(', ');
+            document.getElementById('count').innerText = `數據量: ${arr.length}`;
+            document.getElementById('time').innerText = `耗時: ${(end - start).toFixed(4)} ms`;
+        }, 10);
     }
 
     // 監聽 Enter 鍵
-    document.getElementById("inputArray").addEventListener("keydown", (e) => {
-        if(e.key === "Enter") execute();
+    document.getElementById('txtIn').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            go();
+        }
     });
 </script>
 

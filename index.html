@@ -3,61 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序</title>
+    <title>五大排序演算法展示</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+            background-color: #f4f7f6;
         }
-        input, button {
-            margin: 5px 0;
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        input, button, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            word-break: break-all;
+            min-height: 50px;
+        }
+        h1 { color: #333; text-align: center; }
     </style>
 </head>
 <body>
-    <h1>氣泡排序</h1>
-    <p>輸入一組數字（以逗號分隔），點擊排序按鈕查看結果。</p>
-    <input type="text" id="inputArray" placeholder="例如：64,34,25,12,22,11,90">
-    <button onclick="performBubbleSort()">排序</button>
-    <h2>結果</h2>
-    <p id="output"></p>
 
-    <script>
-        function bubbleSort(arr) {
-            let n = arr.length;
-            for (let i = 0; i < n; i++) {
-                let swapped = false;
-                for (let j = 0; j < n - i - 1; j++) {
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                        swapped = true;
-                    }
-                }
-                // 若無交換，提早結束
-                if (!swapped) break;
-            }
-            return arr;
-        }
-
-        function performBubbleSort() {
-            const input = document.getElementById("inputArray").value;
-            if (!input) {
-                document.getElementById("output").innerText = "請輸入數字！";
-                return;
-            }
-
-            // 將輸入轉換為數字陣列
-            const array = input.split(",").map(num => parseFloat(num.trim()));
-            if (array.some(isNaN)) {
-                document.getElementById("output").innerText = "請確保所有輸入都是有效的數字！";
-                return;
-            }
-
-            // 執行氣泡排序
-            const sortedArray = bubbleSort(array);
-            document.getElementById("output").innerText = `排序後的結果：${sortedArray.join(", ")}`;
-        }
-    </script>
-</body>
-</html>
+<div class="container">
+    <h1>排序演算法展示</h1>
+    <p>請輸入一組數字（以逗號分隔）：</p>
+    <input type="text" id="inputArray" placeholder="例如：64, 34, 25, 12, 22, 11, 90">
+    
+    <p>選擇排序方法：</p>
+    <select id="sortMethod">
+        <option value="bubble">🫧 氣泡排序 (Bubble Sort)</option>
+        <option value="selection">🎯 選擇排序 (Selection Sort)</option>
+        <option value="insertion">🃏 插入排序 (Insertion Sort)</option>
+        <option value="merge">✂️ 合併排序 (Merge Sort)</option>
+        <option value="quick">⚡ 快速排序 (Quick Sort)</option>

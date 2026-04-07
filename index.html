@@ -1,85 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <title>五大排序演算法實驗室</title>
-    <style>
-        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f9; text-align: center; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
-        button { background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background: #0056b3; }
-        #output { margin-top: 20px; padding: 15px; background: #fdfd96; border-radius: 8px; color: #333; font-weight: bold; min-height: 40px; word-break: break-all; }
-        .time { font-size: 12px; color: #666; margin-top: 5px; }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <h2>📊 排序演算法分析</h2>
-    <p>請輸入數字，用逗號隔開：</p>
-    <input type="text" id="inputArray" placeholder="例如: 64, 34, 25, 12, 22">
-    
-    <select id="sortMethod">
-        <option value="bubble">🫧 氣泡排序 (Bubble Sort)</option>
-        <option value="selection">🎯 選擇排序 (Selection Sort)</option>
-        <option value="insertion">🃏 插入排序 (Insertion Sort)</option>
-        <option value="merge">✂️ 合併排序 (Merge Sort)</option>
-        <option value="quick">⚡ 快速排序 (Quick Sort)</option>
-    </select>
-
-    <button onclick="execute()">開始排序</button>
-
-    <div id="output">等待指令...</div>
-    <div id="timer" class="time"></div>
-</div>
-
 <script>
-    // --- 演算法區塊 ---
-    function bubbleSort(arr) {
-        let n = arr.length;
-        for (let i = 0; i < n - 1; i++)
-            for (let j = 0; j < n - i - 1; j++)
-                if (arr[j] > arr[j + 1]) [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        return arr;
-    }
+    // ... 前面的排序演算法 function 保持不變 ...
 
-    function selectionSort(arr) {
-        for (let i = 0; i < arr.length - 1; i++) {
-            let min = i;
-            for (let j = i + 1; j < arr.length; j++) if (arr[j] < arr[min]) min = j;
-            [arr[i], arr[min]] = [arr[min], arr[i]];
-        }
-        return arr;
-    }
-
-    function insertionSort(arr) {
-        for (let i = 1; i < arr.length; i++) {
-            let key = arr[i], j = i - 1;
-            while (j >= 0 && arr[j] > key) { arr[j + 1] = arr[j]; j--; }
-            arr[j + 1] = key;
-        }
-        return arr;
-    }
-
-    function mergeSort(arr) {
-        if (arr.length <= 1) return arr;
-        let mid = Math.floor(arr.length / 2);
-        let left = mergeSort(arr.slice(0, mid));
-        let right = mergeSort(arr.slice(mid));
-        let res = [], i = 0, j = 0;
-        while (i < left.length && j < right.length) res.push(left[i] < right[j] ? left[i++] : right[j++]);
-        return res.concat(left.slice(i)).concat(right.slice(j));
-    }
-
-    function quickSort(arr) {
-        if (arr.length <= 1) return arr;
-        let pivot = arr[0], left = [], right = [];
-        for (let i = 1; i < arr.length; i++) arr[i] < pivot ? left.push(arr[i]) : right.push(arr[i]);
-        return [...quickSort(left), pivot, ...quickSort(right)];
-    }
-
-    // --- 執行控管 ---
     function execute() {
         const inputStr = document.getElementById("inputArray").value;
         const method = document.getElementById("sortMethod").value;
@@ -89,7 +10,6 @@
             return;
         }
 
-        // 強力清洗數據：支援全形半形逗號，過濾空格
         let array = inputStr.replace(/，/g, ",").split(",").map(s => s.trim()).filter(s => s !== "").map(Number);
 
         if (array.some(isNaN)) {
@@ -97,22 +17,21 @@
             return;
         }
 
-        const t0 = performance.now();
         let sorted = [];
-        
-        // 確保每一種都有對應到
         if (method === "bubble") sorted = bubbleSort([...array]);
         else if (method === "selection") sorted = selectionSort([...array]);
         else if (method === "insertion") sorted = insertionSort([...array]);
         else if (method === "merge") sorted = mergeSort([...array]);
         else if (method === "quick") sorted = quickSort([...array]);
 
-        const t1 = performance.now();
-        
         document.getElementById("output").innerText = "結果：" + sorted.join(", ");
-        document.getElementById("timer").innerText = "本次運算耗時: " + (t1 - t0).toFixed(4) + " ms";
     }
-</script>
 
-</body>
-</html>
+    // ✨ 新增這段：監聽鍵盤 Enter 事件
+    document.getElementById("inputArray").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // 防止網頁重新整理
+            execute(); // 呼叫執行排序
+        }
+    });
+</script>
